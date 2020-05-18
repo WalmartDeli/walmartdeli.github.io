@@ -5,17 +5,27 @@
   
 
   
-  <title>Payton H.</title>
+  <title>Hack the Box: Devel | Payton H.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Personal Blog">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Payton H.">
-<meta property="og:url" content="https://walmartdeli.github.io/index.html">
+  <meta name="description" content="In today’s writeup we’ll be looking a Hack the Box’s Devel. This is a retired windows machine with a difficulty of easy. Contents Tools Enumeration Exploitation    - Generate Payload    - Access Shel">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hack the Box: Devel">
+<meta property="og:url" content="https://walmartdeli.github.io/2020/05/17/htb-devel/index.html">
 <meta property="og:site_name" content="Payton H.">
-<meta property="og:description" content="Personal Blog">
+<meta property="og:description" content="In today’s writeup we’ll be looking a Hack the Box’s Devel. This is a retired windows machine with a difficulty of easy. Contents Tools Enumeration Exploitation    - Generate Payload    - Access Shel">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://walmartdeli.github.io/2020/05/17/htb-devel/devel.png">
+<meta property="og:image" content="https://walmartdeli.github.io/2020/05/17/htb-devel/nmap.png">
+<meta property="og:image" content="https://walmartdeli.github.io/2020/05/17/htb-devel/ftplogin.png">
+<meta property="og:image" content="https://walmartdeli.github.io/2020/05/17/htb-devel/delitest.png">
+<meta property="og:image" content="https://walmartdeli.github.io/2020/05/17/htb-devel/handler.png">
+<meta property="og:image" content="https://walmartdeli.github.io/2020/05/17/htb-devel/shell1.png">
+<meta property="og:image" content="https://walmartdeli.github.io/2020/05/17/htb-devel/suggester.png">
+<meta property="article:published_time" content="2020-05-17T23:53:56.000Z">
+<meta property="article:modified_time" content="2020-05-18T03:31:15.574Z">
 <meta property="article:author" content="Payton H.">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://walmartdeli.github.io/2020/05/17/htb-devel/devel.png">
   
   
     <link rel="icon" href="/favicon.png">
@@ -64,9 +74,7 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-htb-devel" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-htb-devel" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/05/17/htb-devel/" class="article-date">
   <time datetime="2020-05-17T23:53:56.000Z" itemprop="datePublished">2020-05-17</time>
@@ -83,8 +91,8 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/05/17/htb-devel/">Hack the Box: Devel</a>
+    <h1 class="article-title" itemprop="name">
+      Hack the Box: Devel
     </h1>
   
 
@@ -149,98 +157,19 @@
     </footer>
   </div>
   
-</article>
-
-
+    
+<nav id="article-nav">
   
-    <article id="post-htb-legacy" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/05/15/htb-legacy/" class="article-date">
-  <time datetime="2020-05-16T03:15:11.000Z" itemprop="datePublished">2020-05-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/htb/">Hack the Box</a>►<a class="article-category-link" href="/categories/htb/Easy/">Easy</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/05/15/htb-legacy/">Hack the Box: Legacy</a>
-    </h1>
+    <a href="/2020/05/15/htb-legacy/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hack the Box: Legacy</div>
+    </a>
   
+</nav>
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="Contents"><a href="#Contents" class="headerlink" title="Contents"></a>Contents</h2><p> <a href="#Tools">Tools</a><br> <a href="#Enumeration">Enumeration</a><br>    - <a href="#Nmap">Nmap</a><br>    - <a href="#SMB">SMB</a><br> <a href="#Exploitation">Exploitation</a><br> <a href="#Post-Exploitation">Post-Exploitation</a><br>    - <a href="#Owning-Root">Owning Root</a><br>    - <a href="#Owning-John">Owning John</a></p>
-<p>Every hacker/pentester has to start somewhere so this is where I’ll start. In this write-up, I’ll go over how I enumerated and exploited Hack the Box’s Legacy Windows machine.</p>
-<h2 id="Tools"><a href="#Tools" class="headerlink" title="Tools"></a>Tools</h2><ul>
-<li>Nmap</li>
-<li>Mesasploit Framework<ul>
-<li>auxiliary/scanner/smb/smb_version </li>
-<li>windows/smb/ms08_067_netapi</li>
-<li>Meterpreter Reverse Shell</li>
-</ul>
-</li>
-</ul>
-<h2 id="Enumeration"><a href="#Enumeration" class="headerlink" title="Enumeration"></a>Enumeration</h2><h3 id="Nmap"><a href="#Nmap" class="headerlink" title="Nmap"></a>Nmap</h3><p>We’ll start by scanning for any active ports with nmap</p>
-<p><code>nmap -A -T4 -p- -Pn 10.10.10.4</code> </p>
-<ul>
-<li><strong>-A</strong> This will list all the juicy details needed instead of only giving us the open ports.</li>
-<li><strong>-T4</strong> This sets the speed of the scan and ranges from 1-5.</li>
-<li><strong>-p-</strong> While -p sets the range of ports to scan, -p- does a comprehensive scan of TCP ports 1-635535.</li>
-<li><strong>-Pn</strong> Nmap was having trouble pinging the server so we added -Pn to assume the server is active.</li>
-</ul>
-<img src="/2020/05/15/htb-legacy/nmap.png" class="" title="Nmap scan">
-
-
-<p>We see that both ports 139 and 445 are open. These ports are both commonly associated with smb, a filesharing protocol historically known for being an attack vector.</p>
-<p>We also see that the computer is Windows XP and that the smb’s message signing is disabled. Both are potential points of interest that will end up not being necessary to exploit this machine.</p>
-<h3 id="SMB"><a href="#SMB" class="headerlink" title="SMB"></a>SMB</h3><p>Let’s do some further enumeration and see if we can figure out what version of smb the victim is running. We can do this by opning up metaspoing and using the smb version scanner.</p>
-<p>We can open metasploit by typing:<br><code>sudo msfconsle</code></p>
-<p>Then we open the module:<br><code>use auxiliary/scanner/smb/smb_version</code></p>
-<p>If you type in <code>options</code> you should see something like this:</p>
-<img src="/2020/05/15/htb-legacy/smbversion.png" class="" title="SMB Version Module">
-
-<p>We’ll set the rhosts to be our target:<br><code>set rhosts 10.10.10.4</code><br>And then we’ll <code>run</code>. The result should look like this:</p>
-<img src="/2020/05/15/htb-legacy/smbout.png" class="" title="Smb Version Output">
-
-<p>We don’t get much from this but we do know that the host is running on Windows XP SP3. If we do a quick google search on that we’ll find this page from <a href="https://www.rapid7.com/db/modules/exploit/windows/smb/ms08_067_netapi" target="_blank" rel="noopener">Rapid7</a> In it, they kindly provide they module they used to exploit a flaw in smb.<br><code>exploit/windows/smb/ms08_067_netapi</code></p>
-<h2 id="Exploitation"><a href="#Exploitation" class="headerlink" title="Exploitation"></a>Exploitation</h2><p>Now that we have our exploit, its a simple as going to the module in metasploit, setting the rhosts to 10.10.10.4. If we check the options it should look something like this:</p>
-<img src="/2020/05/15/htb-legacy/exploitopt.png" class="" title="Exploit Options">
-
-<p>Our payload is currently set to a reverse tcp meterpreter shell. If we experience issues with the payload or want to use another payload we can switch that by doing <code>set payload</code>. We should also change the listening port from 4444 as many systems are aware of the default metasploit port and block it. But for this system it should be fine. The last part is the exploit target. This is used to set the operating system of the victim we are targeting. Since it is set to automatic targeting we’ll keep it there, but if there are any further issues we might want to change that to the specific OS we are targeting.</p>
-<p>Once we <code>run</code> the exploit you should see something like this:</p>
-<img src="/2020/05/15/htb-legacy/exploitout.png" class="" title="Exploit Output">
-<p>If we type <code>pwd</code> we should see that we are now in a windows machine. We can also enter <code>getuid</code> to see that we are already the windows version of root user.</p>
-<img src="/2020/05/15/htb-legacy/getuid.png" class="" title="User ID">
-<p>With this, we have succussfully exploited and gained access to the machine.</p>
-<h2 id="Post-Exploitation"><a href="#Post-Exploitation" class="headerlink" title="Post-Exploitation"></a>Post-Exploitation</h2><p>We can finish by finding the admin and user flags.</p>
-<h3 id="Owning-Root"><a href="#Owning-Root" class="headerlink" title="Owning Root"></a>Owning Root</h3><p>In the meterpreter open open up a shell by typing <code>shell</code>. <code>cd</code> into <code>C:\Documents and Settings\Administrator\Desktop</code>. Once in the directory, enter <code>dir</code> to find <code>root.txt</code>. To see its contents enter <code>type root.txt</code>. It should look like this:</p>
-<img src="/2020/05/15/htb-legacy/root.png" class="" title="Root Flag">
-<h3 id="Owning-John"><a href="#Owning-John" class="headerlink" title="Owning John"></a>Owning John</h3><p>Similarly, for the user <code>cd</code> into <code>C:\Documents and Settings\john\Desktop</code>. Type <code>dir</code> to see that there is a <code>user.txt</code> file. Run the <code>type</code> command on user.txt and you should see the user flag.</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://walmartdeli.github.io/2020/05/15/htb-legacy/" data-id="cka97248e0000slwd8b2z65wa" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
   
 </article>
-
-
-  
-
 
 </section>
         
